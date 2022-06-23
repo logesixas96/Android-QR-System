@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "790423506610",
+    "project_id": "itp-qr-system",
+    "storage_bucket": "itp-qr-system.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:790423506610:android:c01a0eace01225bbd383ab",
+        "android_client_info": {
+          "package_name": "com.itpqrsystem.android_qr_system"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "790423506610-cn8ajruoiibu61gni0sue408q1h1jn3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZjq77TzCYpjKT6TKiPphZ08xaXIMz85E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "790423506610-cn8ajruoiibu61gni0sue408q1h1jn3q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
