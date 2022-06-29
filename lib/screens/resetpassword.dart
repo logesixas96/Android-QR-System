@@ -26,13 +26,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
       validator: (value) {
         if (value!.isEmpty) {
-          return ("Please Enter Your Email");
+          return ("Please Enter Your Email!");
         }
 
         //reg expression for email validation
         if (!RegExp("^[a-zA-Z0-9+_.-.-]+@[a-zA-Z0-9+_.-.-]+.[a-z]")
             .hasMatch(value)) {
-          return ("Please Enter a valid email");
+          return ("Please Enter a valid email!");
         }
         return null;
       },
