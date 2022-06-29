@@ -38,6 +38,8 @@ dependencies:
   cloud_firestore: ^3.1.18
   fluttertoast: ^8.0.9
   firebase_core: ^1.18.0
+  barcode_scan2: ^4.2.1
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

@@ -1,9 +1,13 @@
+import 'package:android_qr_system/model/attendancemodel.dart';
+import 'package:android_qr_system/model/historymodel.dart';
+import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:android_qr_system/model/usermodel.dart';
 import 'package:android_qr_system/screens/login.dart';
+import 'package:intl/intl.dart';
 
 class UserDashboard extends StatefulWidget {
   const UserDashboard({Key? key}) : super(key: key);
@@ -15,6 +19,12 @@ class UserDashboard extends StatefulWidget {
 class _UserDashboardState extends State<UserDashboard> {
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
+  String qrResult = "";
+  String hostID = "";
+  String eventName = "";
+  String eventAddress = "";
+  String timeStamp = "";
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
   @override
   void initState(){
@@ -103,7 +113,40 @@ class _UserDashboardState extends State<UserDashboard> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    ElevatedButton(onPressed: () {},
+                    ElevatedButton(onPressed: () async {
+                      ScanResult result = await BarcodeScanner.scan();
+                      setState(() {
+                        qrResult = result.rawContent;
+                        List<String> words = qrResult.split(":");
+                        hostID = words[0];
+                        eventName = words[1];
+                        eventAddress = words[2];
+
+                        String liveTimeStamp = DateFormat("dd MMMM yyyy | hh:mm a").format(DateTime.now());
+                        timeStamp = liveTimeStamp;
+                      });
+
+                      final usersRef = firebaseFirestore
+                          .collection('users')
+                          .doc(user!.uid)
+                          .collection("history")
+                          .doc(eventName);
+
+                      usersRef.get()
+                          .then((docSnapshot) => {
+                            if (docSnapshot.exists) {
+                              Fluttertoast.showToast(
+                                msg: "Error! Attendance has already scanned for this user!", timeInSecForIosWeb: 5)
+                            }
+                            else {
+                              postAttendanceToFirestore(),
+                              postHistoryToFirestore(),
+                              Fluttertoast.showToast(
+                                msg: "Attendance successfully scanned!", timeInSecForIosWeb: 5)
+                              }
+                      });
+
+                    },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30,
@@ -120,7 +163,8 @@ class _UserDashboardState extends State<UserDashboard> {
                       ),
                     ),
                     SizedBox(width: 15),
-                    ElevatedButton(onPressed: () {},
+                    ElevatedButton(onPressed: () {
+                    },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 30,
@@ -152,5 +196,49 @@ class _UserDashboardState extends State<UserDashboard> {
     Fluttertoast.showToast(msg: "Signed out successfully!");
     Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => LoginScreen()));
+  }
+
+  postAttendanceToFirestore() async {
+    //calling firestore
+    //calling user model
+    //sending the values
+
+    AttendanceModel attendanceModel = AttendanceModel();
+
+    //writing all the values
+    attendanceModel.firstName = loggedInUser.firstName;
+    attendanceModel.lastName = loggedInUser.lastName;
+    attendanceModel.email = loggedInUser.email;
+    attendanceModel.phoneNum = loggedInUser.phoneNum;
+    attendanceModel.timeStamp = timeStamp;
+
+    await firebaseFirestore
+        .collection("users")
+        .doc(hostID)
+        .collection("events")
+        .doc(eventName)
+        .collection("attendance")
+        .doc(user!.uid)
+        .set(attendanceModel.toMap());
+  }
+
+  postHistoryToFirestore() async {
+    //calling firestore
+    //calling user model
+    //sending the values
+
+    HistoryModel historyModel = HistoryModel();
+
+    //writing all the values
+    historyModel.eventName = eventName;
+    historyModel.eventAddress = eventAddress;
+    historyModel.timeStamp = timeStamp;
+
+    await firebaseFirestore
+        .collection("users")
+        .doc(user!.uid)
+        .collection("history")
+        .doc(eventName)
+        .set(historyModel.toMap());
   }
 }

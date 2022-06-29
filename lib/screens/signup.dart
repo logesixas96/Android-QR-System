@@ -16,14 +16,12 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
 
   final _formKey = GlobalKey<FormState>();
-
   final firstNameEditingController = new TextEditingController();
   final lastNameEditingController = new TextEditingController();
   final emailEditingController = new TextEditingController();
   final phoneNumEditingController = new TextEditingController();
   final passwordEditingController = new TextEditingController();
   final confirmPasswordEditingController = new TextEditingController();
-
   final _auth = FirebaseAuth.instance;
 
   @override
