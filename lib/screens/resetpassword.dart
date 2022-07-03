@@ -72,51 +72,62 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      extendBodyBehindAppBar: true,
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        elevation: 0,
+        elevation: 1,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.red),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
+        title: Text("Reset Password"),
+        centerTitle: true,
       ),
       body: Center(
-        // child: SingleChildScrollView(
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/bg.png"),
-              fit: BoxFit.fill,
+        child: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/bg.png"),
+                fit: BoxFit.fill,
+              ),
             ),
-          ),            child: Padding(
-          padding: const EdgeInsets.all(36.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: 200,
-                  child: Image.asset(
-                    "assets/logo.png",
-                    fit: BoxFit.contain,
+            child: Center(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(36.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 200,
+                          child: Image.asset(
+                            "assets/logo.png",
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        SizedBox(height: 45),
+                        emailField,
+                        SizedBox(height: 35),
+                        resetButton,
+                        //SizedBox(height: 180),
+                      ],
+                    ),
                   ),
                 ),
-                SizedBox(height: 45),
-                emailField,
-                SizedBox(height: 35),
-                resetButton,
-                SizedBox(height: 180),
-              ],
+
+              ),
             ),
+            //),
           ),
-        ),
-          //),
         ),
       ),
     );
