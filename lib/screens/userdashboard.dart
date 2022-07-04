@@ -52,12 +52,12 @@ class _UserDashboardState extends State<UserDashboard> {
         centerTitle: true,
         actions: <Widget>[
           Padding(
-            padding: EdgeInsets.only(right: 20),
+            padding: const EdgeInsets.only(right: 20),
             child: GestureDetector(
                 onTap: () {
                   SignOut(context);
                 },
-                child: Icon(
+                child: const Icon(
                   Icons.logout,
                   size: 26,
                   color: Colors.redAccent,
@@ -71,7 +71,7 @@ class _UserDashboardState extends State<UserDashboard> {
           child: Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/bg.png"),
                 fit: BoxFit.fill,
@@ -85,42 +85,42 @@ class _UserDashboardState extends State<UserDashboard> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      SizedBox(height: 35),
+                      const SizedBox(height: 35),
                       SizedBox(
                         height: 200,
                         child: Image.asset("assets/logo.png",fit: BoxFit.fill),
                       ),
-                      SizedBox(height: 10),
-                      Text(
+                      const SizedBox(height: 10),
+                      const Text(
                         "My Profile",
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Text("${loggedInUser.firstName} ${loggedInUser.lastName}",
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.black54,
                           fontWeight: FontWeight.w500,
                           fontSize: 20,
                         ),
                       ),
                       Text("${loggedInUser.email}",
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.black54,
                           fontWeight: FontWeight.w500,
                           fontSize: 20,
                         ),
                       ),
                       Text("${loggedInUser.phoneNum}",
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.black54,
                           fontWeight: FontWeight.w500,
                           fontSize: 20,
                         ),
                       ),
-                      SizedBox(height: 30),
+                      const SizedBox(height: 30),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -165,7 +165,7 @@ class _UserDashboardState extends State<UserDashboard> {
                             ),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
+                              children: const <Widget>[
                                 Icon(
                                     Icons.qr_code_2,
                                     size: 70),
@@ -173,13 +173,13 @@ class _UserDashboardState extends State<UserDashboard> {
                               ],
                             ),
                           ),
-                          SizedBox(width: 15),
+                          const SizedBox(width: 15),
                           ElevatedButton(onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        AttendanceHistory()));
+                                        const AttendanceHistory()));
                           },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
@@ -188,7 +188,7 @@ class _UserDashboardState extends State<UserDashboard> {
                             ),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
+                              children: const <Widget>[
                                 Icon(
                                     Icons.history,
                                     size: 70),
@@ -214,7 +214,7 @@ class _UserDashboardState extends State<UserDashboard> {
     await FirebaseAuth.instance.signOut();
     Fluttertoast.showToast(msg: "Signed out successfully!");
     Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => LoginScreen()));
+        MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
 
   postAttendanceToFirestore() async {

@@ -12,7 +12,7 @@ class ResetPasswordScreen extends StatefulWidget {
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController emailController = new TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final _auth = FirebaseAuth.instance;
 
   @override
@@ -43,8 +43,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       },
       textInputAction: TextInputAction.done,
       decoration: InputDecoration(
-          prefixIcon: Icon(Icons.mail),
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+          prefixIcon: const Icon(Icons.mail),
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Email",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -58,12 +58,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       borderRadius: BorderRadius.circular(30),
       color: Colors.redAccent,
       child: MaterialButton(
-        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         minWidth: MediaQuery.of(context).size.width,
         onPressed: () {
           resetPass(emailController.text);
         },
-        child: Text("Reset Password",
+        child: const Text("Reset Password",
           textAlign: TextAlign.center,
           style: TextStyle(
               fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
@@ -78,12 +78,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         backgroundColor: Colors.transparent,
         elevation: 1,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        title: Text("Reset Password"),
+        title: const Text("Reset Password"),
         centerTitle: true,
       ),
       body: Center(
@@ -91,7 +91,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           child: Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/bg.png"),
                 fit: BoxFit.fill,
@@ -114,9 +114,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             fit: BoxFit.fill,
                           ),
                         ),
-                        SizedBox(height: 45),
+                        const SizedBox(height: 45),
                         emailField,
-                        SizedBox(height: 35),
+                        const SizedBox(height: 35),
                         resetButton,
                         //SizedBox(height: 180),
                       ],

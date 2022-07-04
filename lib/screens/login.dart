@@ -16,8 +16,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final _formKey = GlobalKey<FormState>();
   bool showCircular = false;
-  final TextEditingController emailController = new TextEditingController();
-  final TextEditingController passwordController = new TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   final _auth = FirebaseAuth.instance;
 
@@ -49,8 +49,8 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-          prefixIcon: Icon(Icons.mail),
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+          prefixIcon: const Icon(Icons.mail),
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Email",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -65,13 +65,14 @@ class _LoginScreenState extends State<LoginScreen> {
       obscureText: true,
 
       validator: (value){
-        RegExp regex = new RegExp(r'^.{6,}$');
+        RegExp regex = RegExp(r'^.{6,}$');
         if (value!.isEmpty){
           return ("Please enter a password!");
         }
         if (!regex.hasMatch(value)){
           return ("Password is at least 6 characters!");
         }
+        return null;
       },
 
       onSaved: (value)
@@ -80,8 +81,8 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       textInputAction: TextInputAction.done,
       decoration: InputDecoration(
-          prefixIcon: Icon(Icons.vpn_key),
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+          prefixIcon: const Icon(Icons.vpn_key),
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Password",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -95,12 +96,12 @@ class _LoginScreenState extends State<LoginScreen> {
       borderRadius: BorderRadius.circular(30),
       color: Colors.redAccent,
       child: MaterialButton(
-        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         minWidth: MediaQuery.of(context).size.width,
         onPressed: () {
           signIn(emailController.text, passwordController.text);
         },
-        child: Text("Login",
+        child: const Text("Login",
           textAlign: TextAlign.center,
           style: TextStyle(
               fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
@@ -115,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/bg.png"),
                 fit: BoxFit.fill,
@@ -138,11 +139,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             fit: BoxFit.fill,
                           ),
                         ),
-                        SizedBox(height: 45),
+                        const SizedBox(height: 45),
                         emailField,
-                        SizedBox(height: 25),
+                        const SizedBox(height: 25),
                         passwordField,
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
@@ -152,9 +153,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            ResetPasswordScreen()));
+                                            const ResetPasswordScreen()));
                               },
-                              child: Text(
+                              child: const Text(
                                 "Forgot Password?",
                                 style: TextStyle(
                                     color: Colors.redAccent,
@@ -164,22 +165,22 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 25),
+                        const SizedBox(height: 25),
                         loginButton,
-                        SizedBox(height: 15),
+                        const SizedBox(height: 15),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text("Don't have an account? "),
+                            const Text("Don't have an account? "),
                             GestureDetector(
                               onTap: () {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            SignUpScreen()));
+                                            const SignUpScreen()));
                               },
-                              child: Text(
+                              child: const Text(
                                 "Sign Up",
                                 style: TextStyle(
                                     color: Colors.redAccent,
@@ -212,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
             msg: "Login Successful!",
             timeInSecForIosWeb: 5
         ),
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UserDashboard())),
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const UserDashboard())),
       }).catchError((e)
       {
         Fluttertoast.showToast(

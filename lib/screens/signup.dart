@@ -16,12 +16,12 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
 
   final _formKey = GlobalKey<FormState>();
-  final firstNameEditingController = new TextEditingController();
-  final lastNameEditingController = new TextEditingController();
-  final emailEditingController = new TextEditingController();
-  final phoneNumEditingController = new TextEditingController();
-  final passwordEditingController = new TextEditingController();
-  final confirmPasswordEditingController = new TextEditingController();
+  final firstNameEditingController = TextEditingController();
+  final lastNameEditingController = TextEditingController();
+  final emailEditingController = TextEditingController();
+  final phoneNumEditingController = TextEditingController();
+  final passwordEditingController = TextEditingController();
+  final confirmPasswordEditingController = TextEditingController();
   final _auth = FirebaseAuth.instance;
 
   @override
@@ -38,13 +38,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
         FilteringTextInputFormatter(RegExp(r'[a-zA-Z ]'), allow: true)
       ],
       validator: (value){
-        RegExp regex = new RegExp(r'^.{2,}$');
+        RegExp regex = RegExp(r'^.{2,}$');
         if (value!.isEmpty){
           return ("First name cannot be empty!");
         }
         if (!regex.hasMatch(value)){
           return ("Min. 2 letters are required!)");
         }
+        return null;
       },
 
       onSaved: (value)
@@ -53,8 +54,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-          prefixIcon: Icon(Icons.account_circle),
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+          prefixIcon: const Icon(Icons.account_circle),
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "First Name",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -76,6 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         if (value!.isEmpty){
           return ("Last name cannot be empty!");
         }
+        return null;
       },
 
       onSaved: (value)
@@ -84,8 +86,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-          prefixIcon: Icon(Icons.account_circle),
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+          prefixIcon: const Icon(Icons.account_circle),
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Last Name",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -118,8 +120,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-          prefixIcon: Icon(Icons.mail),
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+          prefixIcon: const Icon(Icons.mail),
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Email",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -154,8 +156,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-          prefixIcon: Icon(Icons.phone),
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+          prefixIcon: const Icon(Icons.phone),
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Phone Number",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -170,13 +172,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
       obscureText: true,
 
       validator: (value){
-        RegExp regex = new RegExp(r'^.{6,}$');
+        RegExp regex = RegExp(r'^.{6,}$');
         if (value!.isEmpty){
           return ("Please enter a password!");
         }
         if (!regex.hasMatch(value)){
           return ("Password needs to be at least 6 characters!");
         }
+        return null;
       },
 
       onSaved: (value)
@@ -185,8 +188,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-          prefixIcon: Icon(Icons.vpn_key),
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+          prefixIcon: const Icon(Icons.vpn_key),
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Password",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -213,8 +216,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       },
       textInputAction: TextInputAction.done,
       decoration: InputDecoration(
-          prefixIcon: Icon(Icons.vpn_key),
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+          prefixIcon: const Icon(Icons.vpn_key),
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Confirm Password",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -228,12 +231,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       borderRadius: BorderRadius.circular(30),
       color: Colors.redAccent,
       child: MaterialButton(
-        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         minWidth: MediaQuery.of(context).size.width,
         onPressed: () {
           signUp(emailEditingController.text, passwordEditingController.text);
         },
-        child: Text("Sign Up",
+        child: const Text("Sign Up",
           textAlign: TextAlign.center,
           style: TextStyle(
               fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
@@ -248,12 +251,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         backgroundColor: Colors.transparent,
         elevation: 1,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        title: Text("Sign Up"),
+        title: const Text("Sign Up"),
         centerTitle: true,
       ),
       body: Center(
@@ -261,7 +264,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/bg.png"),
                 fit: BoxFit.fill,
@@ -277,7 +280,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        SizedBox(height: 35),
+                        const SizedBox(height: 35),
                         SizedBox(
                           height: 200,
                           child: Image.asset(
@@ -285,19 +288,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             fit: BoxFit.contain,
                           ),
                         ),
-                        SizedBox(height: 35),
+                        const SizedBox(height: 35),
                         firstNameField,
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         lastNameField,
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         emailField,
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         phoneNumField,
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         passwordField,
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         confirmPasswordField,
-                        SizedBox(height: 35),
+                        const SizedBox(height: 35),
                         signUpButton,
                         //SizedBox(height: 15),
 
@@ -358,7 +361,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     Navigator.pushAndRemoveUntil(
         (context),
-        MaterialPageRoute(builder: (context) => UserDashboard()),
+        MaterialPageRoute(builder: (context) => const UserDashboard()),
             (route) => false);
   }
 }
