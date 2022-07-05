@@ -35,7 +35,7 @@ class _UserDashboardState extends State<UserDashboard> {
         .doc(user!.uid)
         .get()
         .then((value) {
-      this.loggedInUser = UserModel.fromMap(value.data());
+      loggedInUser = UserModel.fromMap(value.data());
       setState(() {});
     });
   }
@@ -55,7 +55,7 @@ class _UserDashboardState extends State<UserDashboard> {
             padding: const EdgeInsets.only(right: 20),
             child: GestureDetector(
                 onTap: () {
-                  SignOut(context);
+                  signOut(context);
                 },
                 child: const Icon(
                   Icons.logout,
@@ -143,20 +143,31 @@ class _UserDashboardState extends State<UserDashboard> {
                                 .collection("history")
                                 .doc(eventName);
 
+                            final hostRef = firebaseFirestore
+                                .collection('users')
+                                .doc(hostID)
+                                .collection("events")
+                                .doc(eventName)
+                                .collection("attendance")
+                                .doc(user!.uid);
+
                             usersRef.get()
                                 .then((docSnapshot) => {
-                                  if (docSnapshot.exists) {
-                                    Fluttertoast.showToast(
-                                      msg: "Error! Attendance has already scanned for this user!", timeInSecForIosWeb: 5)
-                                  }
-                                  else {
-                                    postAttendanceToFirestore(),
-                                    postHistoryToFirestore(),
-                                    Fluttertoast.showToast(
+                                  hostRef.get()
+                                    .then((docSnapshot) => {
+                                      if (docSnapshot.exists) {
+                                        Fluttertoast.showToast(
+                                          msg: "Error! Attendance has already scanned for this user!", timeInSecForIosWeb: 5)
+                                      }
+                                      else {
+                                      postAttendanceToFirestore(),
+                                      postHistoryToFirestore(),
+                                      Fluttertoast.showToast(
                                       msg: "Attendance successfully scanned!", timeInSecForIosWeb: 5)
+                                      }
                                     }
+                                  )
                             });
-
                           },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
@@ -203,16 +214,16 @@ class _UserDashboardState extends State<UserDashboard> {
                 ),
               ),
             ),
-            //),
           ),
         ),
       ),
     );
   }
 
-  Future<void> SignOut(BuildContext context) async {
+  Future<void> signOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
     Fluttertoast.showToast(msg: "Signed out successfully!");
+    if (!mounted) return;
     Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
@@ -259,5 +270,9 @@ class _UserDashboardState extends State<UserDashboard> {
         .collection("history")
         .doc(eventName)
         .set(historyModel.toMap());
+  }
+  Future<void> myAsyncMethod(BuildContext context, VoidCallback onSuccess) async {
+    await Future.delayed(const Duration(seconds: 2));
+    onSuccess.call();
   }
 }
