@@ -1,27 +1,18 @@
-class HistoryModel{
+class HistoryModel {
   String? eventName;
   String? eventAddress;
-  String? timeStamp;
+  DateTime? timeStamp;
 
   HistoryModel({this.eventName, this.eventAddress, this.timeStamp});
 
-  //data from server
-  factory HistoryModel.fromMap(map){
+  factory HistoryModel.fromMap(map) {
     return HistoryModel(
-      eventName: map['eventName'],
-      eventAddress: map['eventAddress'],
-      timeStamp: map['timeStamp'],
-
-    );
+        eventName: map['eventName'],
+        eventAddress: map['eventAddress'],
+        timeStamp: map['timeStamp']);
   }
 
-  //sending data to server
-  Map<String, dynamic> toMap(){
-    return{
-      'eventName': eventName,
-      'eventAddress': eventAddress,
-      'timeStamp': timeStamp,
-
-    };
+  Map<String, dynamic> toMap() {
+    return {'eventName': eventName, 'eventAddress': eventAddress, 'timeStamp': timeStamp};
   }
 }

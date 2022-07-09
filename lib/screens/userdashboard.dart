@@ -18,23 +18,20 @@ class UserDashboard extends StatefulWidget {
 }
 
 class _UserDashboardState extends State<UserDashboard> {
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
   String qrResult = "";
   String hostID = "";
   String eventName = "";
   String eventAddress = "";
-  String timeStamp = "";
-  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+
+  get timeStamp => DateFormat('dd MMMM yyyy hh:mm a');
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    FirebaseFirestore.instance
-        .collection("users")
-        .doc(user!.uid)
-        .get()
-        .then((value) {
+    FirebaseFirestore.instance.collection("users").doc(user!.uid).get().then((value) {
       loggedInUser = UserModel.fromMap(value.data());
       setState(() {});
     });
@@ -43,180 +40,165 @@ class _UserDashboardState extends State<UserDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 1,
-        title: Text("Welcome ${loggedInUser.firstName}"),
-        centerTitle: true,
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: GestureDetector(
-                onTap: () {
-                  signOut(context);
-                },
-                child: const Icon(
-                  Icons.logout,
-                  size: 26,
-                  color: Colors.redAccent,
-                )
-            ),
-          )
-        ],
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/bg.png"),
-                fit: BoxFit.fill,
-              ),
-            ),
-            child: Center(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(36.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      const SizedBox(height: 35),
-                      SizedBox(
-                        height: 200,
-                        child: Image.asset("assets/logo.png",fit: BoxFit.fill),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        "My Profile",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text("${loggedInUser.firstName} ${loggedInUser.lastName}",
-                        style: const TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 20,
-                        ),
-                      ),
-                      Text("${loggedInUser.email}",
-                        style: const TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 20,
-                        ),
-                      ),
-                      Text("${loggedInUser.phoneNum}",
-                        style: const TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 20,
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          ElevatedButton(onPressed: () async {
-                            ScanResult result = await BarcodeScanner.scan();
-                            setState(() {
-                              qrResult = result.rawContent;
-                              List<String> words = qrResult.split(":");
-                              hostID = words[0];
-                              eventName = words[1];
-                              eventAddress = words[2];
-
-                              String liveTimeStamp = DateFormat("dd MMMM yyyy  |  hh:mm a").format(DateTime.now());
-                              timeStamp = liveTimeStamp;
-                            });
-
-                            final usersRef = firebaseFirestore
-                                .collection('users')
-                                .doc(user!.uid)
-                                .collection("history")
-                                .doc(eventName);
-
-                            final hostRef = firebaseFirestore
-                                .collection('users')
-                                .doc(hostID)
-                                .collection("events")
-                                .doc(eventName)
-                                .collection("attendance")
-                                .doc(user!.uid);
-
-                            usersRef.get()
-                                .then((docSnapshot) => {
-                                  hostRef.get()
-                                    .then((docSnapshot) => {
-                                      if (docSnapshot.exists) {
-                                        Fluttertoast.showToast(
-                                          msg: "Error! Attendance has already scanned for this user!", timeInSecForIosWeb: 5)
-                                      }
-                                      else {
-                                      postAttendanceToFirestore(),
-                                      postHistoryToFirestore(),
-                                      Fluttertoast.showToast(
-                                      msg: "Attendance successfully scanned!", timeInSecForIosWeb: 5)
-                                      }
-                                    }
-                                  )
-                            });
-                          },
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 30,
-                                  vertical: 30),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const <Widget>[
-                                Icon(
-                                    Icons.qr_code_2,
-                                    size: 70),
-                                Text('Scan QR'),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 15),
-                          ElevatedButton(onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const AttendanceHistory()));
-                          },
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 30,
-                                  vertical: 30),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const <Widget>[
-                                Icon(
-                                    Icons.history,
-                                    size: 70),
-                                Text('History'),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 1,
+            title: Text("Welcome ${loggedInUser.firstName}"),
+            centerTitle: true,
+            actions: <Widget>[
+              Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: GestureDetector(
+                      onTap: () {
+                        signOut(context);
+                      },
+                      child: const Icon(Icons.logout, size: 26, color: Colors.redAccent)
+                  )
+              )
+            ]
         ),
-      ),
+        body: Center(
+            child: SingleChildScrollView(
+                child: Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: const BoxDecoration(
+                        image:
+                            DecorationImage(image: AssetImage("assets/bg.png"), fit: BoxFit.fill)
+                    ),
+                    child: Center(
+                        child: SingleChildScrollView(
+                            child: Padding(
+                                padding: const EdgeInsets.all(36.0),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      const SizedBox(height: 35),
+                                      SizedBox(
+                                          height: 200,
+                                          child: Image.asset("assets/logo.png", fit: BoxFit.fill)
+                                      ),
+                                      const SizedBox(height: 10),
+                                      const Text("My Profile",
+                                          style:
+                                              TextStyle(fontSize: 30, fontWeight: FontWeight.bold)
+                                      ),
+                                      const SizedBox(height: 20),
+                                      Text("${loggedInUser.firstName} ${loggedInUser.lastName}",
+                                          style: const TextStyle(
+                                              color: Colors.black54,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 20
+                                          )
+                                      ),
+                                      Text("${loggedInUser.email}",
+                                          style: const TextStyle(
+                                              color: Colors.black54,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 20
+                                          )
+                                      ),
+                                      Text("${loggedInUser.phoneNum}",
+                                          style: const TextStyle(
+                                              color: Colors.black54,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 20
+                                          )
+                                      ),
+                                      const SizedBox(height: 30),
+                                      Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            ElevatedButton(
+                                                onPressed: () async {
+                                                  ScanResult result = await BarcodeScanner.scan();
+                                                  setState(() {
+                                                    qrResult = result.rawContent;
+                                                    List<String> words = qrResult.split(":");
+                                                    hostID = words[0];
+                                                    eventName = words[1];
+                                                    eventAddress = words[2];
+                                                  });
+                                                  final usersRef = firebaseFirestore
+                                                      .collection('users')
+                                                      .doc(user!.uid)
+                                                      .collection("history")
+                                                      .doc(qrResult);
+                                                  final hostRef = firebaseFirestore
+                                                      .collection('users')
+                                                      .doc(hostID)
+                                                      .collection("events")
+                                                      .doc(qrResult)
+                                                      .collection("attendance")
+                                                      .doc(user!.uid);
+                                                  usersRef.get().then((docSnapshot) => {
+                                                        hostRef.get().then((docSnapshot) => {
+                                                              if (docSnapshot.exists)
+                                                                {
+                                                                  Fluttertoast.showToast(
+                                                                      msg:
+                                                                          "Error! Attendance has already scanned for this user!",
+                                                                      timeInSecForIosWeb: 5)
+                                                                }
+                                                              else
+                                                                {
+                                                                  postAttendanceToFirestore(),
+                                                                  postHistoryToFirestore(),
+                                                                  Fluttertoast.showToast(
+                                                                      msg:
+                                                                          "Attendance successfully scanned!",
+                                                                      timeInSecForIosWeb: 5)
+                                                                }
+                                                            })
+                                                      });
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                    padding: const EdgeInsets.symmetric(
+                                                        horizontal: 30, vertical: 30
+                                                    )),
+                                                child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: const <Widget>[
+                                                      Icon(Icons.qr_code_2, size: 70),
+                                                      Text('Scan QR')
+                                                    ]
+                                                )
+                                            ),
+                                            const SizedBox(width: 15),
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              const AttendanceHistory()
+                                                      ));
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                    padding: const EdgeInsets.symmetric(
+                                                        horizontal: 30, vertical: 30
+                                                    )),
+                                                child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: const <Widget>[
+                                                      Icon(Icons.history, size: 70),
+                                                      Text('History')
+                                                    ]
+                                                )
+                                            )
+                                          ]
+                                      )
+                                    ]
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
     );
   }
 
@@ -224,53 +206,42 @@ class _UserDashboardState extends State<UserDashboard> {
     await FirebaseAuth.instance.signOut();
     Fluttertoast.showToast(msg: "Signed out successfully!");
     if (!mounted) return;
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const LoginScreen()));
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
 
   postAttendanceToFirestore() async {
-    //calling firestore
-    //calling user model
-    //sending the values
-
+    DateTime convertedDateTime = DateTime.now();
     AttendanceModel attendanceModel = AttendanceModel();
-
-    //writing all the values
     attendanceModel.firstName = loggedInUser.firstName;
     attendanceModel.lastName = loggedInUser.lastName;
     attendanceModel.email = loggedInUser.email;
     attendanceModel.phoneNum = loggedInUser.phoneNum;
-    attendanceModel.timeStamp = timeStamp;
-
+    attendanceModel.timeStamp = convertedDateTime;
     await firebaseFirestore
         .collection("users")
         .doc(hostID)
         .collection("events")
-        .doc(eventName)
+        .doc(qrResult)
         .collection("attendance")
         .doc(user!.uid)
         .set(attendanceModel.toMap());
   }
 
   postHistoryToFirestore() async {
-    //calling firestore
-    //calling user model
-    //sending the values
-
+    DateTime convertedDateTime = DateTime.now();
     HistoryModel historyModel = HistoryModel();
-
-    //writing all the values
     historyModel.eventName = eventName;
     historyModel.eventAddress = eventAddress;
-    historyModel.timeStamp = timeStamp;
-
+    historyModel.timeStamp = convertedDateTime;
     await firebaseFirestore
         .collection("users")
         .doc(user!.uid)
         .collection("history")
-        .doc(eventName)
+        .doc(qrResult)
         .set(historyModel.toMap());
   }
+
   Future<void> myAsyncMethod(BuildContext context, VoidCallback onSuccess) async {
     await Future.delayed(const Duration(seconds: 2));
     onSuccess.call();
