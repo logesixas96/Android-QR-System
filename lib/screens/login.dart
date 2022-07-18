@@ -13,84 +13,62 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
+  final _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
-  bool showCircular = false;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  final _auth = FirebaseAuth.instance;
-
   @override
   Widget build(BuildContext context) {
-
-    //email field
     final emailField = TextFormField(
       autofocus: false,
       controller: emailController,
       keyboardType: TextInputType.emailAddress,
-
       validator: (value) {
         if (value!.isEmpty) {
           return ("Please enter your email!");
         }
-
-        //reg expression for email validation
-        if (!RegExp("^[a-zA-Z0-9+_.-.-]+@[a-zA-Z0-9+_.-.-]+.[a-z]")
-            .hasMatch(value)) {
+        if (!RegExp("^[a-zA-Z0-9+_.-.-]+@[a-zA-Z0-9+_.-.-]+.[a-z]").hasMatch(value)) {
           return ("Please enter a valid email!");
         }
         return null;
       },
-
-      onSaved: (value)
-      {
+      onSaved: (value) {
         emailController.text = value!;
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.mail),
-          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Email",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          )
+        prefixIcon: const Icon(Icons.mail),
+        contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+        hintText: "Email",
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
-
-    //password field
     final passwordField = TextFormField(
       autofocus: false,
       controller: passwordController,
       obscureText: true,
-
-      validator: (value){
+      validator: (value) {
         RegExp regex = RegExp(r'^.{6,}$');
-        if (value!.isEmpty){
+        if (value!.isEmpty) {
           return ("Please enter a password!");
         }
-        if (!regex.hasMatch(value)){
+        if (!regex.hasMatch(value)) {
           return ("Password is at least 6 characters!");
         }
         return null;
       },
-
-      onSaved: (value)
-      {
+      onSaved: (value) {
         passwordController.text = value!;
       },
       textInputAction: TextInputAction.done,
       decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.vpn_key),
-          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Password",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          )
+        prefixIcon: const Icon(Icons.vpn_key),
+        contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+        hintText: "Password",
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
-
-    //login button
     final loginButton = Material(
       elevation: 5,
       borderRadius: BorderRadius.circular(30),
@@ -101,14 +79,13 @@ class _LoginScreenState extends State<LoginScreen> {
         onPressed: () {
           signIn(emailController.text, passwordController.text);
         },
-        child: const Text("Login",
+        child: const Text(
+          "Login",
           textAlign: TextAlign.center,
-          style: TextStyle(
-              fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -117,10 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/bg.png"),
-                fit: BoxFit.fill,
-              ),
+              image: DecorationImage(image: AssetImage("assets/bg.png"), fit: BoxFit.fill),
             ),
             child: Center(
               child: SingleChildScrollView(
@@ -134,10 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: <Widget>[
                         SizedBox(
                           height: 200,
-                          child: Image.asset(
-                            "assets/logo.png",
-                            fit: BoxFit.fill,
-                          ),
+                          child: Image.asset("assets/logo.png", fit: BoxFit.fill),
                         ),
                         const SizedBox(height: 45),
                         emailField,
@@ -150,10 +121,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             GestureDetector(
                               onTap: () {
                                 Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ResetPasswordScreen()));
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const ResetPasswordScreen()),
+                                );
                               },
                               child: const Text(
                                 "Forgot Password?",
@@ -175,10 +146,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             GestureDetector(
                               onTap: () {
                                 Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SignUpScreen()));
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                                );
                               },
                               child: const Text(
                                 "Sign Up",
@@ -198,28 +168,23 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
-        //),
       ),
     );
   }
 
-  //signin function
-  void signIn(String email, String password) async{
+  void signIn(String email, String password) async {
     if (_formKey.currentState!.validate()) {
       await _auth
           .signInWithEmailAndPassword(email: email, password: password)
           .then((uid) => {
+                Fluttertoast.showToast(msg: "Login Successful!", timeInSecForIosWeb: 5),
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => const UserDashboard()),
+                ),
+              })
+          .catchError((e) {
         Fluttertoast.showToast(
-            msg: "Login Successful!",
-            timeInSecForIosWeb: 5
-        ),
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const UserDashboard())),
-      }).catchError((e)
-      {
-        Fluttertoast.showToast(
-            msg: "Wrong password/ Account does not exist!",
-            timeInSecForIosWeb: 5
-        );
+            msg: "Wrong password/ Account does not exist!", timeInSecForIosWeb: 5);
       });
     }
   }
