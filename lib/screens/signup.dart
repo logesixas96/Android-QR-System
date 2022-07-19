@@ -251,14 +251,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void signUp(String email, String password) async {
     if (_formKey.currentState!.validate()) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return const Center(child: CircularProgressIndicator());
+          });
       await _auth
           .createUserWithEmailAndPassword(email: email, password: password)
-          .then((value) => {postDetailsToFirestore()})
+          .then((value) => {
+                postDetailsToFirestore(),
+                Fluttertoast.showToast(
+                    msg: "Account created successfully!", toastLength: Toast.LENGTH_LONG),
+                Navigator.pushAndRemoveUntil(
+                    (context),
+                    MaterialPageRoute(builder: (context) => const UserDashboard()),
+                    (route) => false)
+              })
           .catchError((e) {
-        Fluttertoast.showToast(
-          msg: e!.message,
-        );
-        Toast.LENGTH_LONG;
+        Navigator.of(context).pop();
+        Fluttertoast.showToast(msg: e!.message, toastLength: Toast.LENGTH_LONG);
       });
     }
   }
@@ -273,8 +284,5 @@ class _SignUpScreenState extends State<SignUpScreen> {
     userModel.lastName = lastNameEditingController.text;
     userModel.phoneNum = phoneNumEditingController.text;
     await firebaseFirestore.collection("users").doc(user.uid).set(userModel.toMap());
-    Fluttertoast.showToast(msg: "Account created successfully!", timeInSecForIosWeb: 5);
-    Navigator.pushAndRemoveUntil((context),
-        MaterialPageRoute(builder: (context) => const UserDashboard()), (route) => false);
   }
 }

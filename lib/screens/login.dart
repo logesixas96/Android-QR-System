@@ -174,17 +174,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void signIn(String email, String password) async {
     if (_formKey.currentState!.validate()) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return const Center(child: CircularProgressIndicator());
+          });
       await _auth
           .signInWithEmailAndPassword(email: email, password: password)
           .then((uid) => {
-                Fluttertoast.showToast(msg: "Login Successful!", timeInSecForIosWeb: 5),
+                Fluttertoast.showToast(msg: "Login Successful!", toastLength: Toast.LENGTH_LONG),
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (context) => const UserDashboard()),
                 ),
               })
           .catchError((e) {
+        Navigator.of(context).pop();
         Fluttertoast.showToast(
-            msg: "Wrong password/ Account does not exist!", timeInSecForIosWeb: 5);
+            msg: e!.message, toastLength: Toast.LENGTH_LONG);
       });
     }
   }

@@ -43,6 +43,7 @@ class _UserDashboardState extends State<UserDashboard> {
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 1,
         title: Text("Welcome ${loggedInUser.firstName}!"),
@@ -134,7 +135,7 @@ class _UserDashboardState extends State<UserDashboard> {
                                               Fluttertoast.showToast(
                                                   msg:
                                                       "Error! Attendance has already scanned for this user!",
-                                                  timeInSecForIosWeb: 5)
+                                                  toastLength: Toast.LENGTH_LONG)
                                             }
                                           else
                                             {
@@ -142,7 +143,7 @@ class _UserDashboardState extends State<UserDashboard> {
                                               postHistoryToFirestore(),
                                               Fluttertoast.showToast(
                                                   msg: "Attendance successfully scanned!",
-                                                  timeInSecForIosWeb: 5)
+                                                  toastLength: Toast.LENGTH_LONG)
                                             }
                                         }),
                                   });
@@ -191,6 +192,11 @@ class _UserDashboardState extends State<UserDashboard> {
   }
 
   Future<void> signOut(BuildContext context) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return const Center(child: CircularProgressIndicator());
+        });
     await FirebaseAuth.instance.signOut();
     Fluttertoast.showToast(msg: "Signed out successfully!");
     if (!mounted) return;

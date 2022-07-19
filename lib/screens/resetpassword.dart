@@ -22,10 +22,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       keyboardType: TextInputType.emailAddress,
       validator: (value) {
         if (value!.isEmpty) {
-          return ("Please Enter Your Email!");
+          return ("Please enter your email!");
         }
         if (!RegExp("^[a-zA-Z0-9+_.-.-]+@[a-zA-Z0-9+_.-.-]+.[a-z]").hasMatch(value)) {
-          return ("Please Enter a valid email!");
+          return ("Please enter a valid email!");
         }
         return null;
       },
@@ -110,11 +110,21 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   void resetPass(String email) {
     if (_formKey.currentState!.validate()) {
-      _auth.sendPasswordResetEmail(email: email);
-      {
-        Fluttertoast.showToast(msg: "An email has been sent to reset your password!");
+      showDialog(
+          context: context,
+          builder: (context) {
+            return const Center(child: CircularProgressIndicator());
+          });
+      _auth
+          .sendPasswordResetEmail(email: email)
+          .then((value) => {
+                Fluttertoast.showToast(msg: "A link has been sent to your email!"),
+                Navigator.of(context).pop()
+              })
+          .catchError((e) {
         Navigator.of(context).pop();
-      }
+        Fluttertoast.showToast(msg: e!.message, toastLength: Toast.LENGTH_LONG);
+      });
     }
   }
 }
