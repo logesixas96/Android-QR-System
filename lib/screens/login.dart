@@ -1,7 +1,7 @@
+import 'package:android_qr_system/screens/verifyemail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:android_qr_system/screens/userdashboard.dart';
 import 'package:android_qr_system/screens/signup.dart';
 import 'package:android_qr_system/screens/resetpassword.dart';
 
@@ -184,13 +184,12 @@ class _LoginScreenState extends State<LoginScreen> {
           .then((uid) => {
                 Fluttertoast.showToast(msg: "Login Successful!", toastLength: Toast.LENGTH_LONG),
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const UserDashboard()),
+                  MaterialPageRoute(builder: (context) => const VerifyEmail()),
                 ),
               })
           .catchError((e) {
         Navigator.of(context).pop();
-        Fluttertoast.showToast(
-            msg: e!.message, toastLength: Toast.LENGTH_LONG);
+        Fluttertoast.showToast(msg: e!.message, toastLength: Toast.LENGTH_LONG);
       });
     }
   }

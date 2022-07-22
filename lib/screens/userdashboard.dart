@@ -46,7 +46,7 @@ class _UserDashboardState extends State<UserDashboard> {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 1,
-        title: Text("Welcome ${loggedInUser.firstName}!"),
+        title: Text("Welcome, ${loggedInUser.firstName} !"),
         centerTitle: true,
         actions: <Widget>[
           Padding(

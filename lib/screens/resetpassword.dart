@@ -68,7 +68,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
               }),
-          title: const Text("Reset Password"),
+          title: const Text("Reset Account Password"),
           centerTitle: true),
       body: Center(
         child: SingleChildScrollView(

@@ -1,10 +1,10 @@
+import 'package:android_qr_system/screens/verifyemail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:android_qr_system/model/usermodel.dart';
-import 'package:android_qr_system/screens/userdashboard.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -198,7 +198,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
               }),
-          title: const Text("Sign Up"),
+          title: const Text("Create An Account"),
           centerTitle: true),
       body: Center(
         child: SingleChildScrollView(
@@ -262,10 +262,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 postDetailsToFirestore(),
                 Fluttertoast.showToast(
                     msg: "Account created successfully!", toastLength: Toast.LENGTH_LONG),
-                Navigator.pushAndRemoveUntil(
-                    (context),
-                    MaterialPageRoute(builder: (context) => const UserDashboard()),
-                    (route) => false)
+                Navigator.pushAndRemoveUntil((context),
+                    MaterialPageRoute(builder: (context) => const VerifyEmail()), (route) => false)
               })
           .catchError((e) {
         Navigator.of(context).pop();
