@@ -118,7 +118,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       _auth
           .sendPasswordResetEmail(email: email)
           .then((value) => {
-                Fluttertoast.showToast(msg: "A link has been sent to your email!"),
+                Fluttertoast.showToast(msg: "A link has been sent to your email!", toastLength: Toast.LENGTH_LONG),
                 Navigator.of(context).pop()
               })
           .catchError((e) {

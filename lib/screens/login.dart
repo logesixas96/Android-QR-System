@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:android_qr_system/screens/userdashboard.dart';
 import 'package:android_qr_system/screens/verifyemail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
+  bool isEmailVerified = false;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -86,81 +89,84 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            decoration: const BoxDecoration(
-              image: DecorationImage(image: AssetImage("assets/bg.png"), fit: BoxFit.fill),
-            ),
-            child: Center(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(36.0),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 200,
-                          child: Image.asset("assets/logo.png", fit: BoxFit.fill),
-                        ),
-                        const SizedBox(height: 45),
-                        emailField,
-                        const SizedBox(height: 25),
-                        passwordField,
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const ResetPasswordScreen()),
-                                );
-                              },
-                              child: const Text(
-                                "Forgot Password?",
-                                style: TextStyle(
-                                    color: Colors.redAccent,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15),
+    return WillPopScope(
+      onWillPop: showExitPopup,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: SingleChildScrollView(
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                image: DecorationImage(image: AssetImage("assets/bg.png"), fit: BoxFit.fill),
+              ),
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(36.0),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 200,
+                            child: Image.asset("assets/logo.png", fit: BoxFit.fill),
+                          ),
+                          const SizedBox(height: 45),
+                          emailField,
+                          const SizedBox(height: 25),
+                          passwordField,
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const ResetPasswordScreen()),
+                                  );
+                                },
+                                child: const Text(
+                                  "Forgot Password?",
+                                  style: TextStyle(
+                                      color: Colors.redAccent,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 25),
-                        loginButton,
-                        const SizedBox(height: 15),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            const Text("Don't have an account? "),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const SignUpScreen()),
-                                );
-                              },
-                              child: const Text(
-                                "Sign Up",
-                                style: TextStyle(
-                                    color: Colors.redAccent,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15),
+                            ],
+                          ),
+                          const SizedBox(height: 25),
+                          loginButton,
+                          const SizedBox(height: 15),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              const Text("Don't have an account? "),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                                  );
+                                },
+                                child: const Text(
+                                  "Sign Up",
+                                  style: TextStyle(
+                                      color: Colors.redAccent,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -182,15 +188,42 @@ class _LoginScreenState extends State<LoginScreen> {
       await _auth
           .signInWithEmailAndPassword(email: email, password: password)
           .then((uid) => {
-                Fluttertoast.showToast(msg: "Login Successful!", toastLength: Toast.LENGTH_LONG),
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const VerifyEmail()),
-                ),
+                checkEmailVerified(),
               })
           .catchError((e) {
         Navigator.of(context).pop();
         Fluttertoast.showToast(msg: e!.message, toastLength: Toast.LENGTH_LONG);
       });
     }
+  }
+
+  Future checkEmailVerified() async {
+    await FirebaseAuth.instance.currentUser!.reload();
+    setState(() {
+      isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
+    });
+    if (isEmailVerified) {
+      Fluttertoast.showToast(msg: "Signed in successfully!", toastLength: Toast.LENGTH_LONG);
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const UserDashboard()), (route) => false);
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const VerifyEmail()), (route) => false);
+    }
+  }
+
+  Future<bool> showExitPopup() async {
+    return await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text('Exit App'),
+              content: const Text('Do you want to exit the app?'),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(false), child: const Text('No')),
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(true), child: const Text('Yes')),
+              ],
+            ));
   }
 }
